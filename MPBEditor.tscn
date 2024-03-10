@@ -1,0 +1,63 @@
+[gd_scene load_steps=2 format=3 uid="uid://cqusmye5nc8k5"]
+
+[ext_resource type="Script" path="res://MPBEditor.gd" id="1_kv3xk"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kv3xk")
+
+[node name="LoadFileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+initial_position = 2
+size = Vector2i(392, 354)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+
+[node name="SaveFileDialog" type="FileDialog" parent="."]
+initial_position = 2
+size = Vector2i(392, 354)
+ok_button_text = "Save"
+access = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="MenuBar" type="MenuBar" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="File" type="PopupMenu" parent="VBoxContainer/MenuBar"]
+title = "File"
+size = Vector2i(114, 100)
+item_count = 4
+item_0/text = "New .mpb"
+item_0/id = 0
+item_1/text = "Open .mpb"
+item_1/id = 1
+item_2/text = "Save .mpb"
+item_2/id = 2
+item_3/text = "Exit"
+item_3/id = 3
+
+[node name="Waa" type="PopupMenu" parent="VBoxContainer/MenuBar"]
+
+[node name="Waaaa" type="PopupMenu" parent="VBoxContainer/MenuBar"]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="mpbTree" type="Tree" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="file_selected" from="LoadFileDialog" to="." method="_on_load_file_dialog_file_selected"]
+[connection signal="index_pressed" from="VBoxContainer/MenuBar/File" to="." method="_on_file_index_pressed"]
