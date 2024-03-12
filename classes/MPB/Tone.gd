@@ -32,7 +32,8 @@ static func DecodeADPCM(adpcmArray: PackedByteArray, highPass: bool) -> Array:
 		if !nibble:
 			adpcmArrayIndex += 1
 		nibble ^= 4
-		history = history * 254 / 256 # high pass
+		if highPass:
+			history = history * 254 / 256 # high pass
 		
 		# adpcm step
 		var sign = step & 8

@@ -158,13 +158,14 @@ func loadMpbFile(fileToLoad):
 				# we'll later replace this with the index in bank
 				if ptrToneData != 0:
 					split.ToneDataIndex = ptrToneData
+					
+					# todo: turn this into a class that includes bitdepth
+					if !ptrsToneData.has(ptrToneData):
+						ptrsToneData.append(ptrToneData)
 				else:
 					split.ToneDataIndex = -1
 				
 				
-				# todo: turn this into a class that includes bitdepth
-				if !ptrsToneData.has(ptrToneData):
-					ptrsToneData.append(ptrToneData)
 				
 				
 				# mask appropriate bits and shift
@@ -311,3 +312,8 @@ func loadMpbFile(fileToLoad):
 		savedPcmToneData.store_buffer(pcmToneData)
 		savedPcmToneData.flush()
 		savedPcmToneData.close()
+		
+		var newTone = Tone.new()
+		newTone.ADPCMData = toneData
+		newTone.PCMData = pcmToneData
+		Tones.append(newTone)

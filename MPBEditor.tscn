@@ -1,6 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqusmye5nc8k5"]
+[gd_scene load_steps=7 format=3 uid="uid://cqusmye5nc8k5"]
 
 [ext_resource type="Script" path="res://MPBEditor.gd" id="1_kv3xk"]
+[ext_resource type="StyleBox" uid="uid://l4mt1077li8" path="res://selected.stylebox" id="2_3wa0o"]
+[ext_resource type="StyleBox" uid="uid://bg8qdxokmuqyh" path="res://normal.tres" id="2_51or2"]
+[ext_resource type="StyleBox" uid="uid://qhcrky0v23ta" path="res://focus.stylebox" id="3_12scb"]
+[ext_resource type="StyleBox" uid="uid://23srw5vnissr" path="res://selectedfocus.tres" id="5_4e0p4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_42hip"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -11,7 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_kv3xk")
 
-[node name="LoadFileDialog" type="FileDialog" parent="."]
+[node name="ImportMpbDialog" type="FileDialog" parent="."]
 title = "Open a File"
 initial_position = 2
 size = Vector2i(392, 354)
@@ -19,22 +30,22 @@ ok_button_text = "Open"
 file_mode = 0
 access = 2
 
-[node name="SaveFileDialog" type="FileDialog" parent="."]
+[node name="ExportMpbDialog" type="FileDialog" parent="."]
 initial_position = 2
 size = Vector2i(392, 354)
 ok_button_text = "Save"
 access = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MenuSplit" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="MenuBar" type="MenuBar" parent="VBoxContainer"]
+[node name="MenuBar" type="MenuBar" parent="MenuSplit"]
 layout_mode = 2
 
-[node name="File" type="PopupMenu" parent="VBoxContainer/MenuBar"]
+[node name="File" type="PopupMenu" parent="MenuSplit/MenuBar"]
 title = "File"
 size = Vector2i(114, 100)
 item_count = 4
@@ -47,17 +58,80 @@ item_2/id = 2
 item_3/text = "Exit"
 item_3/id = 3
 
-[node name="Waa" type="PopupMenu" parent="VBoxContainer/MenuBar"]
+[node name="Waa" type="PopupMenu" parent="MenuSplit/MenuBar"]
 
-[node name="Waaaa" type="PopupMenu" parent="VBoxContainer/MenuBar"]
+[node name="Waaaa" type="PopupMenu" parent="MenuSplit/MenuBar"]
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="MainSplit" type="HSplitContainer" parent="MenuSplit"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="mpbTree" type="Tree" parent="VBoxContainer/HBoxContainer"]
+[node name="SettingsSplit" type="VSplitContainer" parent="MenuSplit/MainSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[connection signal="file_selected" from="LoadFileDialog" to="." method="_on_load_file_dialog_file_selected"]
-[connection signal="index_pressed" from="VBoxContainer/MenuBar/File" to="." method="_on_file_index_pressed"]
+[node name="TonebankSplit" type="VSplitContainer" parent="MenuSplit/MainSplit/SettingsSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ToneTree" type="Tree" parent="MenuSplit/MainSplit/SettingsSplit/TonebankSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+theme_override_constants/v_separation = 0
+theme_override_constants/item_margin = 0
+theme_override_constants/inner_item_margin_left = 4
+theme_override_styles/panel = ExtResource("2_51or2")
+theme_override_styles/focus = ExtResource("3_12scb")
+theme_override_styles/selected = ExtResource("2_3wa0o")
+theme_override_styles/selected_focus = ExtResource("5_4e0p4")
+columns = 2
+select_mode = 1
+
+[node name="BankTree" type="Tree" parent="MenuSplit/MainSplit/SettingsSplit/TonebankSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+theme_override_constants/v_separation = 0
+theme_override_constants/inner_item_margin_left = 4
+theme_override_styles/panel = ExtResource("2_51or2")
+theme_override_styles/focus = ExtResource("3_12scb")
+theme_override_styles/selected = ExtResource("2_3wa0o")
+theme_override_styles/selected_focus = ExtResource("5_4e0p4")
+
+[node name="SettingsTree" type="Tree" parent="MenuSplit/MainSplit/SettingsSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/v_separation = 0
+theme_override_constants/inner_item_margin_left = 4
+theme_override_styles/panel = ExtResource("2_51or2")
+theme_override_styles/focus = ExtResource("3_12scb")
+theme_override_styles/selected = ExtResource("2_3wa0o")
+theme_override_styles/selected_focus = ExtResource("5_4e0p4")
+columns = 2
+
+[node name="MidiSplit" type="VSplitContainer" parent="MenuSplit/MainSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="MidiContainer" type="PanelContainer" parent="MenuSplit/MainSplit/MidiSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_42hip")
+
+[node name="PianoContainer" type="PanelContainer" parent="MenuSplit/MainSplit/MidiSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_42hip")
+
+[connection signal="file_selected" from="ImportMpbDialog" to="." method="importMpbFile"]
+[connection signal="index_pressed" from="MenuSplit/MenuBar/File" to="." method="_on_file_index_pressed"]
+[connection signal="item_selected" from="MenuSplit/MainSplit/SettingsSplit/TonebankSplit/BankTree" to="." method="bankTreeItemSelected"]
+[connection signal="item_edited" from="MenuSplit/MainSplit/SettingsSplit/SettingsTree" to="." method="settingsTreeItemEdited"]
