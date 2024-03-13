@@ -133,5 +133,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_42hip")
 
 [connection signal="file_selected" from="ImportMpbDialog" to="." method="importMpbFile"]
 [connection signal="index_pressed" from="MenuSplit/MenuBar/File" to="." method="_on_file_index_pressed"]
+[connection signal="button_clicked" from="MenuSplit/MainSplit/SettingsSplit/TonebankSplit/ToneTree" to="." method="toneTreeButtonClicked"]
 [connection signal="item_selected" from="MenuSplit/MainSplit/SettingsSplit/TonebankSplit/BankTree" to="." method="bankTreeItemSelected"]
 [connection signal="item_edited" from="MenuSplit/MainSplit/SettingsSplit/SettingsTree" to="." method="settingsTreeItemEdited"]

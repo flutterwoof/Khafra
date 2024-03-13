@@ -47,8 +47,6 @@ func populateMpbTree():
 	# create 'bank' root
 	var bankTreeItem = bankTree.create_item()
 	bankTree.hide_root = true
-	var toneRootTreeItem = toneTree.create_item()
-	toneTree.hide_root = true
 	
 	for program in loadedBank.Programs:
 		var programTreeItem = bankTree.create_item(bankTreeItem)
@@ -63,9 +61,15 @@ func populateMpbTree():
 				splitTreeItem.set_text(0, "Split " + str(layer.Splits.find(split)) + " [" + str(split.NoteRangeLow) + "-" + str(split.NoteRangeHigh) + "]")
 				splitTreeItem.set_metadata(0, split)
 	
+	
+	var toneRootTreeItem = toneTree.create_item()
+	toneTree.hide_root = true
+	
 	for tone in loadedBank.Tones:
 		var toneTreeItem = toneTree.create_item(toneRootTreeItem)
 		toneTreeItem.set_text(0, "Tone " + str(loadedBank.Tones.find(tone)))
+		toneTreeItem.set_metadata(0, tone)
+		toneTreeItem.add_button(1, Texture2D.new(), -1, false, "Play tone")
 
 
 func settingsTreeItemEdited():
@@ -81,3 +85,13 @@ func bankTreeItemSelected():
 		if node is Split:
 			node.ShowSettings(settingsTree)
 
+
+
+func toneTreeButtonClicked(item: TreeItem, column, id, mouse_button_index):
+	if column == 1: # play button column
+		var tone: Tone = item.get_metadata(0)
+		var streamPlayer: AudioStreamPlayer = AudioStreamPlayer.new()
+		add_child(streamPlayer)
+		streamPlayer.stream = tone.PCMStream
+		streamPlayer.play()
+		print("Playing")

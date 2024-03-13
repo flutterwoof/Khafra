@@ -1,8 +1,8 @@
 class_name Tone extends Node2D
 
-var ADPCMData
-var PCMData
-
+var ADPCMData : PackedByteArray
+var PCMData : PackedByteArray
+var PCMStream : AudioStreamWAV
 
 
 # stolen from superctr/adpcm

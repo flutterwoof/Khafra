@@ -3,6 +3,7 @@ class_name Split extends Node2D
 enum Wave {Saw, Square, Triangle, Noise}
 
 var ToneDataIndex : int
+var Tone : Tone
 
 var BitDepth : int
 var Loop : bool
@@ -56,6 +57,17 @@ var VelocityHigh : int
 var DrumMode : int
 var DrumGroupID : int
 
+
+# tone playback
+var PCMStream : AudioStreamWAV
+
+func SetupPCM():
+	PCMStream.format = AudioStreamWAV.FORMAT_16_BITS
+	
+
+
+
+# generating settings Tree
 func ShowSettings(settingsTree: Tree):
 	var root = settingsTree.create_item()
 	settingsTree.hide_root = true
@@ -148,3 +160,7 @@ func ShowSettings(settingsTree: Tree):
 	filterAttackLevelTreeItem.set_range_config(1, 0, 8184, 4, false)
 	filterAttackLevelTreeItem.set_range(1, FilterAttackLevel * 4)
 	filterAttackLevelTreeItem.set_editable(1, true)
+	
+	
+	# https://old.reddit.com/r/godot/comments/monb7z/optionbutton_in_treenode_problem/
+	# reddit post because there's no fucking documentation

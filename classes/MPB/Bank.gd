@@ -1,12 +1,10 @@
 class_name Bank extends Node2D
 
-var Velocities = []
-var Programs = []
-var Tones = []
+var Velocities: Array[PackedByteArray] = []
+var Programs: Array[Program] = []
+var Tones: Array[Tone] = []
 
 func loadMpbFile(fileToLoad):
-	# temporary lists
-	var ToneDatas = []
 	
 	if not FileAccess.file_exists(fileToLoad):
 		print("Error: File not found")
@@ -65,7 +63,7 @@ func loadMpbFile(fileToLoad):
 	# get velocities
 	mpbPosition = ptrVelocities
 	for i in numberOfVelocities:
-		var velocity = []
+		var velocity: PackedByteArray = []
 		for x in 128:
 			velocity.append(mpbArray.decode_u8(mpbPosition))
 			mpbPosition += 1
@@ -276,24 +274,39 @@ func loadMpbFile(fileToLoad):
 	# sort tone data references
 	ptrsToneData.sort()
 	
-	
+	var tonedatasaveindex = 0
 	# split out tone data
 	var ptrsToneDataLen = len(ptrsToneData)
 	for index in len(ptrsToneData):
 		var ptrToneData = ptrsToneData[index]
 		
-		mpbPosition = ptrToneData
 		
 		var endLocation
 		
 		if index < ptrsToneDataLen - 1:
 			endLocation = ptrsToneData[index + 1] # start of next tone data is end of this data
 		else: # okay it's the last one
-			endLocation = fileSize - 8 # checksum is end of this data
+			endLocation = fileSize - 8 # the end of this data is the end of the file, so: filesize, minus checksum/endb length
 		
-		var ToneData = mpbArray.slice(mpbPosition, mpbPosition + endLocation - ptrsToneData[index])
-		ToneDatas.append(ToneData)
-	
+		print(endLocation)
+		
+		var toneData = mpbArray.slice(ptrToneData, endLocation)
+		var newTone = Tone.new()
+		newTone.ADPCMData = toneData
+		newTone.PCMData = Tone.DecodeADPCM(toneData, true) # todo: don't do this unless user presses a button to convert
+
+		newTone.PCMStream = AudioStreamWAV.new()
+		newTone.PCMStream.mix_rate = 22050
+		newTone.PCMStream.format = AudioStreamWAV.FORMAT_16_BITS
+		newTone.PCMStream.data = newTone.PCMData
+		Tones.append(newTone)
+		
+		
+		#var savedAdpcmToneData = FileAccess.open("C:\\Users\\madr\\Desktop\\adpcm" + str(tonedatasaveindex) + ".raw", FileAccess.WRITE)
+		#tonedatasaveindex += 1
+		#savedAdpcmToneData.store_buffer(newTone.ADPCMData)
+		#savedAdpcmToneData.flush()
+		#savedAdpcmToneData.close()
 	
 	# check each split and replace tone data in-file reference with bank indices
 	for program in Programs:
@@ -301,19 +314,5 @@ func loadMpbFile(fileToLoad):
 			for split in layer.Splits:
 				if split.ToneDataIndex != -1:
 					split.ToneDataIndex = ptrsToneData.find(split.ToneDataIndex)
+					split.Tone = Tones[split.ToneDataIndex]
 	
-	
-	# Todo: don't do this unless user asks
-	var tonedatasaveindex = 0
-	for toneData in ToneDatas:
-		var pcmToneData = Tone.DecodeADPCM(toneData, true)
-		var savedPcmToneData = FileAccess.open("C:\\Users\\madr\\Desktop\\decoded" + str(tonedatasaveindex) + ".raw", FileAccess.WRITE)
-		tonedatasaveindex += 1
-		savedPcmToneData.store_buffer(pcmToneData)
-		savedPcmToneData.flush()
-		savedPcmToneData.close()
-		
-		var newTone = Tone.new()
-		newTone.ADPCMData = toneData
-		newTone.PCMData = pcmToneData
-		Tones.append(newTone)
